@@ -9,12 +9,19 @@ load_dotenv()
 
 app = FastAPI(title="Voice Chatbot API - FREE VERSION")
 
+# FIXED: Updated CORS configuration to allow your specific Vercel domain
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://*.vercel.app"],
+    allow_origins=[
+        "http://localhost:3000",  # Local development
+        "http://localhost:3001",  # Alternative local port
+        "https://voice-chatbot-git-main-ila-ashoks-projects.vercel.app",  # Your production URL
+        "https://voice-chatbot-ila-ashoks-projects.vercel.app",  # Potential alternative URL
+        "https://voice-chatbot.vercel.app",  # If you set up custom domain
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods including OPTIONS, POST, GET
+    allow_headers=["*"],  # Allows all headers including Content-Type
 )
 
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -32,7 +39,8 @@ async def root():
             "Groq LLM for responses (FREE)",
             "Browser-based Text-to-Speech (FREE)",
             "Zero API costs!"
-        ]
+        ],
+        "status": "running"
     }
 
 @app.post("/api/chat")
