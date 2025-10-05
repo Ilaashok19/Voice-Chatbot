@@ -22,9 +22,14 @@ export default function Home() {
   const recognitionRef = useRef<any>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const isStoppingRef = useRef(false); // FIXED: Track if we're intentionally stopping
+  const isStoppingRef = useRef(false);
+  const isInitializedRef = useRef(false); // FIXED: Prevent double initialization
 
+  // FIXED: Initialize speech recognition ONCE
   useEffect(() => {
+    if (isInitializedRef.current) return; // Prevent re-initialization
+    isInitializedRef.current = true;
+
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const speechSynthesis = window.speechSynthesis;
     
@@ -35,10 +40,13 @@ export default function Home() {
     }
 
     const recognition = new SpeechRecognition();
-    // FIXED: Set to false to prevent continuous listening issues
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+      console.log('✅ Recognition started');
+    };
 
     recognition.onresult = (event: any) => {
       let interimTranscript = '';
@@ -56,35 +64,39 @@ export default function Home() {
       const currentTranscript = finalTranscript || interimTranscript;
       setTranscript(currentTranscript);
 
-      // FIXED: Auto-send when final result is received
+      // Auto-send when final result is received
       if (finalTranscript.trim()) {
+        console.log('📝 Final transcript:', finalTranscript);
         isStoppingRef.current = true;
         setIsListening(false);
-        sendMessage(finalTranscript.trim());
-        setTranscript('');
+        
+        // Use setTimeout to ensure state updates properly
+        setTimeout(() => {
+          sendMessageRef.current(finalTranscript.trim());
+          setTranscript('');
+        }, 100);
       }
     };
 
     recognition.onerror = (event: any) => {
-      console.error('Speech recognition error:', event.error);
+      console.error('❌ Speech recognition error:', event.error);
+      
+      if (event.error === 'not-allowed') {
+        alert('❌ Microphone access denied!\n\nPlease:\n1. Click the 🎤 icon in your browser\'s address bar\n2. Select "Always allow"\n3. Refresh the page');
+      } else if (event.error === 'aborted') {
+        console.log('Recognition aborted (normal)');
+      }
+      
       setIsListening(false);
       isStoppingRef.current = false;
     };
 
     recognition.onend = () => {
-      // FIXED: Only restart if we're still supposed to be listening
-      // and we didn't intentionally stop
-      if (isListening && !isStoppingRef.current) {
-        try {
-          recognition.start();
-        } catch (error) {
-          console.error('Error restarting recognition:', error);
-          setIsListening(false);
-        }
-      } else {
-        setIsListening(false);
-        isStoppingRef.current = false;
-      }
+      console.log('🔚 Recognition ended. isListening:', isListening, 'isStopping:', isStoppingRef.current);
+      
+      // Don't auto-restart - user must click button again
+      setIsListening(false);
+      isStoppingRef.current = false;
     };
 
     recognitionRef.current = recognition;
@@ -93,13 +105,13 @@ export default function Home() {
     return () => {
       if (recognitionRef.current) {
         try {
-          recognitionRef.current.stop();
+          recognitionRef.current.abort();
         } catch (error) {
-          // Ignore errors on cleanup
+          // Ignore cleanup errors
         }
       }
     };
-  }, [isListening]); // FIXED: Added isListening to dependency array
+  }, []); // FIXED: Empty dependency array - only run once
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -109,51 +121,23 @@ export default function Home() {
     scrollToBottom();
   }, [messages]);
 
-  const startListening = () => {
-    if (!browserSupport) {
-      alert('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
+  // FIXED: Use ref for sendMessage so we can call it from recognition callbacks
+  const sendMessageRef = useRef<(text: string) => Promise<void>>(async () => {});
+
+  const sendMessage = async (text: string) => {
+    if (!text.trim() || isProcessing) {
+      console.log('⚠️ Cannot send: empty or already processing');
       return;
     }
 
-    setTranscript('');
-    isStoppingRef.current = false; // FIXED: Reset stopping flag
-    setIsListening(true);
-    
-    try {
-      recognitionRef.current?.start();
-    } catch (error) {
-      console.error('Error starting recognition:', error);
-      setIsListening(false);
-    }
-  };
+    console.log('📤 Sending message:', text);
 
-  const stopListening = async () => {
-    isStoppingRef.current = true; // FIXED: Mark that we're intentionally stopping
-    setIsListening(false);
-    
-    try {
-      recognitionRef.current?.stop();
-    } catch (error) {
-      console.error('Error stopping recognition:', error);
-    }
-
-    if (transcript.trim()) {
-      await sendMessage(transcript.trim());
-      setTranscript('');
-    }
-  };
-
-  const sendMessage = async (text: string) => {
-    if (!text.trim() || isProcessing) return;
-
-    // FIXED: Ensure listening is stopped before sending
-    if (isListening) {
-      isStoppingRef.current = true;
-      setIsListening(false);
+    // Force stop recognition if it's still running
+    if (recognitionRef.current) {
       try {
-        recognitionRef.current?.stop();
+        recognitionRef.current.abort();
       } catch (error) {
-        // Ignore errors
+        // Ignore
       }
     }
 
@@ -168,6 +152,7 @@ export default function Home() {
     setMessages(updatedMessages);
     setInputText('');
     setIsProcessing(true);
+    setIsListening(false); // Ensure listening is off
 
     try {
       const response = await fetch('https://voice-chatbot-backend-r2bb.onrender.com/api/chat', {
@@ -210,14 +195,73 @@ export default function Home() {
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsProcessing(false);
-      isStoppingRef.current = false; // FIXED: Reset flag after processing
+      isStoppingRef.current = false;
+    }
+  };
+
+  // Update the ref whenever sendMessage changes
+  useEffect(() => {
+    sendMessageRef.current = sendMessage;
+  }, [messages, isProcessing]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const startListening = () => {
+    if (!browserSupport) {
+      alert('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+
+    // Prevent starting if already listening
+    if (isListening) {
+      console.log('⚠️ Already listening, ignoring click');
+      return;
+    }
+
+    console.log('🎤 Starting to listen...');
+    
+    setTranscript('');
+    isStoppingRef.current = false;
+    
+    // Force stop first
+    try {
+      recognitionRef.current?.abort();
+    } catch (error) {
+      // Ignore
+    }
+    
+    // Small delay to ensure clean state
+    setTimeout(() => {
+      try {
+        setIsListening(true);
+        recognitionRef.current?.start();
+        console.log('✅ Recognition started successfully');
+      } catch (error) {
+        console.error('❌ Error starting recognition:', error);
+        setIsListening(false);
+        alert(`Microphone error: ${error instanceof Error ? error.message : 'Unknown error'}\n\nPlease refresh the page and try again.`);
+      }
+    }, 100);
+  };
+
+  const stopListening = () => {
+    console.log('🛑 Stopping listening...');
+    isStoppingRef.current = true;
+    setIsListening(false);
+    
+    try {
+      recognitionRef.current?.stop();
+    } catch (error) {
+      console.error('Error stopping recognition:', error);
+    }
+
+    if (transcript.trim()) {
+      sendMessage(transcript.trim());
+      setTranscript('');
     }
   };
 
   const speakText = (text: string) => {
     if (!synthRef.current || !browserSupport) return;
 
-    // FIXED: Cancel any ongoing speech before starting new one
     synthRef.current.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
@@ -359,9 +403,11 @@ export default function Home() {
           {/* Main Input Controls - MAXIMUM SIZE */}
           <div className="bg-gray-700/60 p-10 rounded-3xl border-4 border-gray-600 shadow-2xl">
             <div className="flex gap-8 items-stretch">
-              {/* Text Input - HUGE */}
+              {/* Text Input - HUGE - FIXED: Added id and name */}
               <div className="flex-1">
                 <input
+                  id="message-input"
+                  name="message"
                   type="text"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
@@ -373,6 +419,7 @@ export default function Home() {
                   placeholder="💬 Type your message here..."
                   disabled={isListening || isProcessing}
                   className="w-full bg-gray-800 text-white text-3xl font-medium rounded-2xl px-10 py-8 border-4 border-gray-600 focus:outline-none focus:ring-4 focus:ring-green-500 focus:border-green-500 disabled:opacity-50 placeholder-gray-400 transition-all shadow-lg"
+                  autoComplete="off"
                 />
               </div>
 
@@ -382,11 +429,12 @@ export default function Home() {
                 disabled={!inputText.trim() || isListening || isProcessing}
                 className="bg-green-600 text-white px-12 py-8 rounded-2xl hover:bg-green-700 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl hover:shadow-green-600/60 border-4 border-green-500"
                 title="Send message (or press Enter)"
+                type="button"
               >
                 <Send className="w-12 h-12" />
               </button>
 
-              {/* Voice Button - MASSIVE */}
+              {/* Voice Button - MASSIVE - FIXED: Prevent double-click */}
               <button
                 onClick={isListening ? stopListening : startListening}
                 disabled={isProcessing}
@@ -396,6 +444,7 @@ export default function Home() {
                     : 'bg-green-600 hover:bg-green-700 shadow-green-600/60 border-green-500'
                 } text-white disabled:opacity-50 disabled:cursor-not-allowed`}
                 title={isListening ? '🛑 Stop recording' : '🎤 Start voice recording'}
+                type="button"
               >
                 {isListening ? <MicOff className="w-12 h-12" /> : <Mic className="w-12 h-12" />}
               </button>
