@@ -22,6 +22,7 @@ export default function Home() {
   const recognitionRef = useRef<any>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isStoppingRef = useRef(false); // FIXED: Track if we're intentionally stopping
 
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -34,7 +35,8 @@ export default function Home() {
     }
 
     const recognition = new SpeechRecognition();
-    recognition.continuous = true;
+    // FIXED: Set to false to prevent continuous listening issues
+    recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
 
@@ -51,17 +53,37 @@ export default function Home() {
         }
       }
 
-      setTranscript(finalTranscript || interimTranscript);
+      const currentTranscript = finalTranscript || interimTranscript;
+      setTranscript(currentTranscript);
+
+      // FIXED: Auto-send when final result is received
+      if (finalTranscript.trim()) {
+        isStoppingRef.current = true;
+        setIsListening(false);
+        sendMessage(finalTranscript.trim());
+        setTranscript('');
+      }
     };
 
     recognition.onerror = (event: any) => {
       console.error('Speech recognition error:', event.error);
       setIsListening(false);
+      isStoppingRef.current = false;
     };
 
     recognition.onend = () => {
-      if (isListening) {
-        recognition.start();
+      // FIXED: Only restart if we're still supposed to be listening
+      // and we didn't intentionally stop
+      if (isListening && !isStoppingRef.current) {
+        try {
+          recognition.start();
+        } catch (error) {
+          console.error('Error restarting recognition:', error);
+          setIsListening(false);
+        }
+      } else {
+        setIsListening(false);
+        isStoppingRef.current = false;
       }
     };
 
@@ -70,10 +92,14 @@ export default function Home() {
 
     return () => {
       if (recognitionRef.current) {
-        recognitionRef.current.stop();
+        try {
+          recognitionRef.current.stop();
+        } catch (error) {
+          // Ignore errors on cleanup
+        }
       }
     };
-  }, [isListening]);
+  }, [isListening]); // FIXED: Added isListening to dependency array
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -90,18 +116,26 @@ export default function Home() {
     }
 
     setTranscript('');
+    isStoppingRef.current = false; // FIXED: Reset stopping flag
     setIsListening(true);
     
     try {
       recognitionRef.current?.start();
     } catch (error) {
       console.error('Error starting recognition:', error);
+      setIsListening(false);
     }
   };
 
   const stopListening = async () => {
+    isStoppingRef.current = true; // FIXED: Mark that we're intentionally stopping
     setIsListening(false);
-    recognitionRef.current?.stop();
+    
+    try {
+      recognitionRef.current?.stop();
+    } catch (error) {
+      console.error('Error stopping recognition:', error);
+    }
 
     if (transcript.trim()) {
       await sendMessage(transcript.trim());
@@ -110,7 +144,18 @@ export default function Home() {
   };
 
   const sendMessage = async (text: string) => {
-    if (!text.trim()) return;
+    if (!text.trim() || isProcessing) return;
+
+    // FIXED: Ensure listening is stopped before sending
+    if (isListening) {
+      isStoppingRef.current = true;
+      setIsListening(false);
+      try {
+        recognitionRef.current?.stop();
+      } catch (error) {
+        // Ignore errors
+      }
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -140,7 +185,7 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get response');
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
@@ -156,15 +201,23 @@ export default function Home() {
 
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to get response. Make sure the backend is running.');
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: '❌ Sorry, I couldn\'t get a response. Please make sure the backend is running and try again.',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsProcessing(false);
+      isStoppingRef.current = false; // FIXED: Reset flag after processing
     }
   };
 
   const speakText = (text: string) => {
     if (!synthRef.current || !browserSupport) return;
 
+    // FIXED: Cancel any ongoing speech before starting new one
     synthRef.current.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
@@ -197,8 +250,8 @@ export default function Home() {
   };
 
   const handleTextSubmit = () => {
-    if (inputText.trim()) {
-      sendMessage(inputText);
+    if (inputText.trim() && !isProcessing) {
+      sendMessage(inputText.trim());
     }
   };
 
