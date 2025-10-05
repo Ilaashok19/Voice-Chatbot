@@ -125,7 +125,7 @@ export default function Home() {
     setIsProcessing(true);
 
     try {
-      const response = await fetch('http://localhost:8000/api/chat', {
+      const response = await fetch('https://voice-chatbot-backend-r2bb.onrender.com/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
