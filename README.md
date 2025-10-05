@@ -1,634 +1,266 @@
-\# 🎤 Voice Chat Assistant - 100% FREE
+🎤 Voice Chatbot - 100% FREE AI Assistant
+A fully-featured voice chatbot with speech-to-text, AI responses, and text-to-speech capabilities. Completely free with zero API costs!
 
+✨ Features
 
+🎙️ Speech-to-Text: Browser-based voice recognition (no API costs!)
+🤖 AI Responses: Powered by Groq's free LLM API
+🔊 Text-to-Speech: Browser-based voice synthesis (no API costs!)
+💬 Text Chat: Type or speak - both work seamlessly
+📱 Responsive Design: Works on desktop and mobile
+🆓 100% Free: No credit card, no hidden costs, no limits!
 
-A fully functional AI-powered voice chatbot with speech recognition and text-to-speech capabilities - \*\*completely free with zero API costs!\*\*
+🌐 Live Demo
 
+Frontend: https://voice-chatbot-git-main-ila-ashoks-projects.vercel.app/
+Backend API: https://voice-chatbot-backend-r2bb.onrender.com
+GitHub: https://github.com/Ilaashok19/Voice-Chatbot
 
+🚀 Tech Stack
+Frontend
 
-!\[Voice Chat Assistant](https://img.shields.io/badge/Cost-$0.00-brightgreen) !\[Next.js](https://img.shields.io/badge/Next.js-14-black) !\[FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688) !\[Python](https://img.shields.io/badge/Python-3.10+-blue) !\[License](https://img.shields.io/badge/License-MIT-yellow)
+Next.js 14 (React 18)
+TypeScript
+Tailwind CSS
+Lucide React (Icons)
+Web Speech API (Browser-native speech recognition)
 
+Backend
 
+FastAPI (Python)
+Groq API (Free LLM)
+Uvicorn (ASGI server)
 
----
+Deployment
 
+Frontend: Vercel (Free tier)
+Backend: Render (Free tier)
 
+📦 Installation & Setup
+Prerequisites
 
-\## 🌟 Features
+Node.js 18+ and npm
+Python 3.8+
+Git
 
-
-
-\- 🎙️ \*\*Voice Input\*\* - Speak naturally using your microphone
-
-\- 💬 \*\*Text Input\*\* - Type messages for text-based interaction
-
-\- 🤖 \*\*AI Responses\*\* - Powered by Groq's free Llama 3.1 LLM
-
-\- 🔊 \*\*Voice Output\*\* - Natural text-to-speech responses
-
-\- 💚 \*\*100% FREE\*\* - No API costs, no credit card required
-
-\- ⚡ \*\*Lightning Fast\*\* - 1-2 second response time
-
-\- 🎨 \*\*Modern UI\*\* - Beautiful dark-themed interface
-
-\- 📱 \*\*Responsive\*\* - Works on desktop and mobile
-
-\- 🌐 \*\*Browser-Based\*\* - Uses Web Speech API (no external STT/TTS costs)
-
-
-
----
-
-
-
-\## 🆓 Why It's Completely Free
-
-
-
-| Component | Technology | Cost |
-
-|-----------|-----------|------|
-
-| Speech-to-Text | Browser Web Speech API | \*\*$0.00\*\* |
-
-| AI Brain | Groq LLM (Llama 3.1) | \*\*$0.00\*\* |
-
-| Text-to-Speech | Browser Web Speech API | \*\*$0.00\*\* |
-
-| Frontend Hosting | Vercel | \*\*$0.00\*\* |
-
-| Backend Hosting | Railway/Render | \*\*$0.00\*\* |
-
-| \*\*TOTAL\*\* | | \*\*$0.00\*\* |
-
-
-
----
-
-
-
-\## 🚀 Live Demo
-
-
-
-🔗 \*\*\[Try it Live](#)\*\* \*(Add your deployed link here)\*
-
-
-
----
-
-
-
-\## 📸 Screenshots
-
-
-
-\### Main Interface
-
-!\[Main Interface](screenshots/main.png)
-
-
-
-\### Voice Recording
-
-!\[Voice Recording](screenshots/recording.png)
-
-
-
-\### Chat Conversation
-
-!\[Chat](screenshots/chat.png)
-
-
-
----
-
-
-
-\## 🏗️ Architecture
-
-┌─────────────────────────────────────────────┐
-
-│  FRONTEND (Next.js) - Your Browser         │
-
-├─────────────────────────────────────────────┤
-
-│  1. User speaks into microphone             │
-
-│     ↓                                       │
-
-│  2. Browser Web Speech API (FREE!)          │
-
-│     Converts speech → text                  │
-
-│     ↓                                       │
-
-│  3. Send text to Backend                    │
-
-└─────────────────────────────────────────────┘
-
-↓
-
-┌─────────────────────────────────────────────┐
-
-│  BACKEND (FastAPI) - Python Server          │
-
-├─────────────────────────────────────────────┤
-
-│  4. Groq LLM (FREE!)                        │
-
-│     Generates AI response                   │
-
-│     ↓                                       │
-
-│  5. Return text response                    │
-
-└─────────────────────────────────────────────┘
-
-↓
-
-┌─────────────────────────────────────────────┐
-
-│  FRONTEND - Your Browser                    │
-
-├─────────────────────────────────────────────┤
-
-│  6. Display text response                   │
-
-│     ↓                                       │
-
-│  7. Browser Web Speech API (FREE!)          │
-
-│     Converts text → speech                  │
-
-│     ↓                                       │
-
-│  8. Play audio response                     │
-
-└─────────────────────────────────────────────┘
-
-
-
----
-
-
-
-\## 💻 Tech Stack
-
-
-
-\### Frontend
-
-\- \*\*Framework\*\*: Next.js 14 (App Router)
-
-\- \*\*Language\*\*: TypeScript
-
-\- \*\*Styling\*\*: Tailwind CSS
-
-\- \*\*Icons\*\*: Lucide React
-
-\- \*\*Speech\*\*: Browser Web Speech API
-
-
-
-\### Backend
-
-\- \*\*Framework\*\*: FastAPI
-
-\- \*\*Language\*\*: Python 3.10+
-
-\- \*\*Server\*\*: Uvicorn
-
-\- \*\*AI\*\*: Groq API (Llama 3.1)
-
-
-
----
-
-
-
-\## 📦 Installation
-
-
-
-\### Prerequisites
-
-
-
-\- Node.js 18+
-
-\- Python 3.8+
-
-\- Git
-
-
-
-\### 1. Clone the Repository
-
-```bash
-
-git clone https://github.com/Ilaashok19/Voice-Chatbot.git
-
+1. Clone Repository
+bashgit clone https://github.com/Ilaashok19/Voice-Chatbot.git
 cd Voice-Chatbot
-
-2\. Backend Setup
-
+2. Backend Setup
 bash# Navigate to backend
-
 cd backend
 
-
-
-\# Create virtual environment
-
+# Create virtual environment
 python -m venv venv
 
-
-
-\# Activate virtual environment
-
-\# Windows:
-
-venv\\Scripts\\activate
-
-\# macOS/Linux:
-
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
 source venv/bin/activate
 
-
-
-\# Install dependencies
-
+# Install dependencies
 pip install -r requirements.txt
 
-
-
-\# Create .env file
-
+# Create .env file
 cp .env.example .env
-
-
-
-\# Add your FREE Groq API key to .env
-
-\# GROQ\_API\_KEY=gsk\_your\_key\_here
-
-
-
-\# Start backend server
-
-python main.py
-
+Edit .env and add your Groq API key:
+envGROQ_API_KEY=gsk_your_key_here
+Start backend server:
+bashpython main.py
 Backend will run on: http://localhost:8000
-
-3\. Frontend Setup
-
+3. Frontend Setup
 bash# Open a new terminal
-
-\# Navigate to frontend
-
 cd frontend
 
-
-
-\# Install dependencies
-
+# Install dependencies
 npm install
 
-
-
-\# Start development server
-
+# Start development server
 npm run dev
-
 Frontend will run on: http://localhost:3000
-
-
-
 🔑 Getting API Keys
-
 Groq API Key (100% FREE - No Credit Card!)
 
-
-
 Go to: https://console.groq.com/keys
-
 Sign up with Google/GitHub
-
 Click "Create API Key"
-
-Copy the key (starts with gsk\_)
-
+Copy the key (starts with gsk_)
 Add to backend/.env file
 
-
-
 That's it! Only 1 API key needed!
-
-
-
 🌐 Browser Compatibility
-
 BrowserSpeech-to-TextText-to-SpeechRatingChrome✅ Excellent✅ Excellent⭐⭐⭐⭐⭐Edge✅ Excellent✅ Excellent⭐⭐⭐⭐⭐Safari✅ Good✅ Good⭐⭐⭐⭐Firefox⚠️ Limited✅ Good⭐⭐⭐
-
 Recommended: Chrome or Edge for best experience
+🚀 Deployment Guide
+Deploy Backend on Render (FREE)
 
+Push code to GitHub (if not already done)
+Go to https://render.com and sign up
+Create New Web Service:
 
+Click "New +" → "Web Service"
+Connect your GitHub account
+Select your Voice-Chatbot repository
+Configure:
 
-🚀 Deployment
+Name: voice-chatbot-backend
+Root Directory: backend
+Runtime: Python 3
+Build Command: pip install -r requirements.txt
+Start Command: uvicorn main:app --host 0.0.0.0 --port $PORT
 
-Deploy Backend (Railway - FREE)
 
 
 
-Push code to GitHub
+Add Environment Variable:
 
-Go to https://railway.app
+Click "Environment" tab
+Add: GROQ_API_KEY = your_groq_api_key
 
-Sign up (free)
 
-"New Project" → "Deploy from GitHub"
+Deploy: Click "Create Web Service"
+Copy your backend URL (e.g., https://voice-chatbot-backend-r2bb.onrender.com)
 
-Select your repository
+Deploy Frontend on Vercel (FREE)
 
-Add environment variable: GROQ\_API\_KEY
+Go to https://vercel.com and sign up
+Import Project:
 
-Deploy automatically!
+Click "Add New..." → "Project"
+Import from GitHub
+Select your Voice-Chatbot repository
 
 
+Configure:
 
-Deploy Frontend (Vercel - FREE)
+Framework Preset: Next.js
+Root Directory: frontend
+Click "Deploy"
 
 
+Update Backend URL:
 
-Go to https://vercel.com
+After deployment, edit frontend/app/page.tsx
+Replace http://localhost:8000 with your Render backend URL
+Example:
 
-Sign up (free)
 
-"Import Project" from GitHub
 
-Select your repository
+typescript   const response = await fetch('https://voice-chatbot-backend-r2bb.onrender.com/api/chat', {
 
-Root directory: frontend
+Redeploy: Commit and push changes
 
-Deploy automatically!
-
-
-
-Update URLs
-
-After deployment:
-
-
-
-Copy your Railway backend URL
-
-Update frontend/app/page.tsx:
-
-
-
-Replace http://localhost:8000 with your Railway URL
-
-
-
-
-
-Update backend/main.py CORS:
-
-
-
-Add your Vercel URL to allow\_origins
-
-
-
-
-
-
-
-
-
-📊 Performance
-
-
-
-Response Time: 1-2 seconds
-
-Voice Recognition: Instant (browser-side)
-
-LLM Response: ~1-2 seconds
-
-Speech Synthesis: Instant (browser-side)
-
-Cost per message: $0.00
-
-Monthly cost: $0.00
-
-
-
-
-
-🎯 Use Cases
-
-
-
-📚 Learning - Practice conversations in different languages
-
-♿ Accessibility - Voice interface for hands-free interaction
-
-🎓 Education - Teaching AI and web development
-
-💼 Portfolio - Showcase your full-stack skills
-
-🎮 Experimentation - Test AI capabilities for free
-
-
-
-
-
-🛠️ Customization
-
-Change Voice Settings
-
-In frontend/app/page.tsx, modify the speakText function:
-
-typescriptutterance.rate = 1.0;   // Speed: 0.1 to 10
-
-utterance.pitch = 1.0;  // Pitch: 0 to 2
-
-utterance.volume = 1.0; // Volume: 0 to 1
-
-Change Bot Personality
-
-In backend/main.py, modify the system prompt:
-
-python{
-
-&nbsp;   "role": "system",
-
-&nbsp;   "content": "You are a helpful assistant."  # Customize this!
-
-}
-
-Change UI Colors
-
-In frontend/app/page.tsx:
-
-
-
-User messages: bg-green-600
-
-Bot messages: bg-gray-700
-
-Buttons: bg-green-600
-
-
-
-
-
+Update CORS (Important!)
+After deploying, update backend/main.py to allow your Vercel domain:
+pythonapp.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://your-app.vercel.app",  # Add your Vercel URL here
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+Commit and push to GitHub - Render will auto-deploy.
 📁 Project Structure
-
-voice-chatbot-free/
-
+Voice-Chatbot/
 ├── backend/
-
 │   ├── main.py              # FastAPI server
-
 │   ├── requirements.txt     # Python dependencies
-
-│   ├── .env                 # API keys (not in git)
-
-│   └── .env.example         # Template
-
-│
-
+│   ├── .env.example         # Environment template
+│   └── .env                 # Your API keys (gitignored)
 ├── frontend/
-
 │   ├── app/
-
 │   │   ├── page.tsx         # Main chat interface
-
 │   │   ├── layout.tsx       # App layout
-
 │   │   └── globals.css      # Global styles
-
 │   ├── package.json         # Node dependencies
+│   └── next.config.js       # Next.js configuration
+└── README.md
+🎯 Usage
+Voice Input
 
-│   └── tailwind.config.ts   # Tailwind config
+Click the 🎤 microphone button
+Speak your message
+The chatbot will automatically process and respond
+Response will be both displayed and spoken aloud
 
-│
+Text Input
 
-├── .gitignore              # Git ignore file
+Type your message in the input field
+Press Enter or click Send
+Get instant AI responses
 
-└── README.md               # This file
+🔧 Configuration
+Backend Configuration
+Edit backend/main.py to customize:
+python# Change AI model
+model="llama-3.1-8b-instant",  # Fast and free
 
+# Adjust response length
+max_tokens=200,  # Shorter responses
 
+# Modify temperature (creativity)
+temperature=0.7,  # 0.0 = focused, 1.0 = creative
+Frontend Configuration
+Edit frontend/app/page.tsx to customize:
+typescript// Change speech recognition language
+recognition.lang = 'en-US';  // or 'es-ES', 'fr-FR', etc.
 
+// Adjust voice synthesis
+utterance.rate = 1.0;   // Speech speed
+utterance.pitch = 1.0;  // Voice pitch
 🐛 Troubleshooting
-
 Microphone Not Working
 
+Check browser permissions: Click 🎤 icon in address bar
+Use Chrome/Edge: Best browser support
+HTTPS required: Works on localhost or HTTPS domains only
 
+CORS Errors
 
-Check browser permissions
+Update backend CORS: Add your frontend URL to allow_origins
+Check Render logs: Ensure backend is running
+Verify URLs: Make sure frontend is calling correct backend URL
 
-Use HTTPS in production (required for mic access)
+Backend Not Responding
 
-Try Chrome or Edge
+Render free tier: First request may take 50+ seconds (cold start)
+Check API key: Verify GROQ_API_KEY in Render environment variables
+View logs: Check Render dashboard for errors
 
+Deployment Issues
 
+Render: Check build logs for Python errors
+Vercel: Ensure frontend is set as root directory
+Environment variables: Verify all keys are set correctly
 
-"Speech recognition not supported"
-
-
-
-Use Chrome, Edge, or Safari
-
-Update browser to latest version
-
-
-
-Backend Connection Failed
-
-
-
-Ensure backend is running on port 8000
-
-Check CORS settings in main.py
-
-Verify Groq API key in .env
-
-
-
-Voice Not Speaking
-
-
-
-Check browser audio isn't muted
-
-Check system volume
-
-Try different browser
-
-
-
-
-
-📈 Groq Free Tier Limits
-
-
-
-30 requests per minute
-
-14,400 tokens per minute
-
-~43,000 messages per day
-
-
-
-Perfect for personal projects and learning!
-
-
-
+💰 Cost Breakdown
+ServiceCostLimitsGroq APIFREEGenerous free tierRender (Backend)FREE750 hours/monthVercel (Frontend)FREE100GB bandwidth/monthSpeech RecognitionFREEBrowser-native (unlimited)Speech SynthesisFREEBrowser-native (unlimited)TOTAL$0.00Perfect for personal use!
 🤝 Contributing
-
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-
-
 Fork the repository
-
 Create your feature branch (git checkout -b feature/AmazingFeature)
-
 Commit your changes (git commit -m 'Add some AmazingFeature')
-
 Push to the branch (git push origin feature/AmazingFeature)
-
 Open a Pull Request
 
-
-
-
-
 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-
-
+This project is open source and available under the MIT License.
 🙏 Acknowledgments
 
+Groq - For free LLM API
+Render - For free backend hosting
+Vercel - For free frontend hosting
+Web Speech API - For browser-native speech capabilities
 
+📧 Contact
+Developer: Ila Ashok
+GitHub: @Ilaashok19
+Project Link: https://github.com/Ilaashok19/Voice-Chatbot
 
-Groq - For providing free, lightning-fast LLM API
-
-Browser Vendors - For Web Speech API
-
-Vercel - For free Next.js hosting
-
-Railway - For free backend hosting
-
-Next.js - Amazing React framework
-
-FastAPI - Beautiful Python framework
-
+⭐ If you find this project useful, please give it a star on GitHub!
+Made with ❤️ using 100% free technologies
