@@ -10,7 +10,7 @@ A fully-featured voice chatbot with speech-to-text, AI responses, and text-to-sp
 📱 Responsive Design: Works on desktop and mobile
 🆓 100% Free: No credit card, no hidden costs, no limits!
 
-🌐 Live Demo
+🌐 Live Demo : https://voice-chatbot-chi.vercel.app/
 
 Frontend: https://voice-chatbot-git-main-ila-ashoks-projects.vercel.app/
 Backend API: https://voice-chatbot-backend-r2bb.onrender.com
