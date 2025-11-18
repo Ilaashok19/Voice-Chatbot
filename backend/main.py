@@ -18,6 +18,7 @@ app.add_middleware(
         "https://voice-chatbot-git-main-ila-ashoks-projects.vercel.app",  # Your production URL
         "https://voice-chatbot-ila-ashoks-projects.vercel.app",  # Potential alternative URL
         "https://voice-chatbot.vercel.app",  # If you set up custom domain
+        "https://voice-chatbot-chi.vercel.app",  # Another potential deployment URL
     ],
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods including OPTIONS, POST, GET
